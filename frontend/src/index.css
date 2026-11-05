@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Bari Khujun logo colours: navy ink and leaf green on warm off-white. */
+  --color-plaster: #eff1e8;
+  --color-sheet: #fcfcf8;
+  --color-ink: #264076;
+  --color-ink-soft: #5a6680;
+  --color-rule: #d6dacd;
+  --color-leaf: #429a4a;
+  /* The logo green, deepened so white button text and green links stay readable. */
+  --color-gate: #287a39;
+  --color-gate-dark: #1f6330;
+  /* Warm brass is kept for star ratings and "waiting" stamps. */
+  --color-brass: #b8892b;
+
+  /* Classic key-tag colours, one per role. */
+  --color-tag-owner: #c2412d;
+  --color-tag-bachelor: #2f6fb5;
+  --color-tag-family: #357a43;
+  --color-tag-buyer: #d9a21b;
+
+  /* Listing categories reuse the tenant tag colours; seats get their own violet tag. */
+  --color-tag-seat: #6b4fa0;
+}
+
+@layer base {
+  body {
+    @apply bg-plaster font-sans text-ink antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-leaf);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes tag-swing {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(6deg); }
+  60% { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-tag-swing {
+  animation: tag-swing 600ms cubic-bezier(0.3, 1.4, 0.5, 1) forwards;
+}
+
+/* Live alerts and the chat drawer slide in (motion-safe: only for people who haven't asked for less motion). */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(1.5rem); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+
+/* Map markers: Leaflet injects these as raw HTML, so they are styled outside Tailwind. */
+.leaflet-container {
+  font-family: var(--font-sans);
+}
+
+/* Smaller map credits on phones, where they wrap onto several lines. */
+@media (max-width: 639px) {
+  .leaflet-control-attribution {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+}
+
+/* Mute the street map so the price tags carry the colour. */
+.leaflet-tile-pane {
+  filter: saturate(0.3) brightness(1.04);
+}
+
+.price-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px 2px 5px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: var(--pin);
+  color: #fff;
+  font: 600 12px/1.35 var(--font-sans);
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgb(20 33 61 / 0.35);
+  transform: translate(-50%, -50%);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+/* The green eyelet that makes a price label read as a key tag. */
+.price-pin::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--color-leaf);
+  border-radius: 50%;
+  background: var(--color-plaster);
+}
+
+.price-pin.is-active {
+  background: var(--color-ink);
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.center-pin {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--color-leaf);
+  box-shadow: 0 0 0 2px var(--color-leaf), 0 2px 6px rgb(20 33 61 / 0.4);
+  transform: translate(-50%, -50%);
+}
+
+/* The owner's draggable house pin: a gate-green map pin whose tip sits on the exact point. */
+.house-pin {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--color-gate);
+  box-shadow: 0 2px 6px rgb(20 33 61 / 0.45);
+  transform: translate(-50%, -100%) translateY(-6px) rotate(-45deg);
+  cursor: grab;
+}
+
+.house-pin::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* "Pick shifting spot on map" is on: two classes, so this beats Leaflet's own grab cursor. */
+.leaflet-container.map-picking {
+  cursor: crosshair;
+}
+
+/* English place names drawn over the base map (PlaceLabels): centred on their point, with a white halo. */
+.place-label {
+  display: block;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  font: 600 12px/1 var(--font-sans);
+  color: var(--color-ink);
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 2px #fff;
+}
+
+.place-label--division {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2b6a33;
+}
+
+.place-label--upazila {
+  font-size: 11.5px;
+  color: #33466b;
+}
+
+/* Below the upazilas (keep in step with LABEL_FONTS in MapLayers.jsx): towns stand out, the rest stay quiet. */
+.place-label--town {
+  font-weight: 700;
+}
+
+.place-label--local {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4a5875;
+}
+
+dialog::backdrop {
+  background: rgb(20 33 61 / 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

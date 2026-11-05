@@ -1,0 +1,28 @@
+fastapi>=0.115
+uvicorn>=0.30
+# uvicorn needs a WebSocket implementation for /ws/realtime (chat and notifications); without one it refuses upgrades.
+websockets>=13
+motor>=3.6
+pydantic>=2.9
+pydantic-settings>=2.5
+email-validator>=2.2
+PyJWT>=2.9
+passlib>=1.7.4
+# passlib 1.7.4 breaks on bcrypt>=4.1 (removed __about__, 72-byte check raises); keep this pin.
+bcrypt==4.0.1
+python-multipart>=0.0.12
+reportlab>=4.2
+# Security layers: rate limiting, HTML sanitising, and full-image decoding when validating uploads.
+# (python-magic is not used: it needs the native libmagic and crashes on Windows; uploads are identified
+# by their magic bytes in app/utils/file_security.py instead.)
+slowapi>=0.1.9
+nh3>=0.2.17
+Pillow>=10.0
+# Automated ID verification: card detection and photo checks, face detection/recognition (OpenCV's YuNet and SFace),
+# OCR in English and Bengali (EasyOCR, which brings in the CPU build of PyTorch), perceptual hashes and fuzzy matching.
+# The models download on first use into backend/models/.
+opencv-python-headless>=4.10
+numpy>=2.0
+imagehash>=4.3
+easyocr>=1.7
+rapidfuzz>=3.9

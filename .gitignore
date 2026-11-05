@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+backend/.venv/
+backend/.env
+
+# Uploaded KYC documents (personal data — never commit)
+backend/uploads/
+
+# Downloaded vision/OCR models for ID verification
+backend/models/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env*.local
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
